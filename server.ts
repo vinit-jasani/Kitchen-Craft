@@ -4,7 +4,30 @@ import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { initializeApp, getApps, getApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import serviceAccount from "./service-account.json"; // Path to your downloaded JSON
+
+// Dynamically load Firebase Admin credentials to prevent build errors on deployment platforms (e.g. Netlify, Vercel)
+let serviceAccount: any = null;
+
+const serviceAccountPath = path.join(process.cwd(), "service-account.json");
+if (fs.existsSync(serviceAccountPath)) {
+  try {
+    serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+  } catch (err) {
+    console.error("Failed to parse service-account.json:", err);
+  }
+} else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (err) {
+    console.error("Failed to parse FIREBASE_SERVICE_ACCOUNT env variable as JSON:", err);
+  }
+} else if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PROJECT_ID) {
+  serviceAccount = {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  };
+}
 
 const DB_FILE = path.join(process.cwd(), "database_store.json");
 
