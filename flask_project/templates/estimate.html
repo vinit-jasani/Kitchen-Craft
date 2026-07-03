@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}KitchenCraft - Estimate Studio{% endblock %}
+
+{% block content %}
+<div class="row g-4" style="margin-top: 20px;">
+    <!-- Title -->
+    <div class="col-12">
+        <h1 class="fw-bold tracking-tight text-dark mb-1">Estimate Studio</h1>
+        <p class="text-muted font-medium mb-0">Interactive modular kitchen sizing and live quote generation</p>
+    </div>
+
+    <!-- Main Configurator Split -->
+    <div class="col-12 col-lg-7">
+        <form action="{{ url_for('estimate') }}" method="POST">
+            <div class="d-flex flex-column gap-4">
+                
+                <!-- Client & Grade Select -->
+                <div class="apple-card p-4">
+                    <h5 class="fw-bold text-dark border-bottom pb-3 mb-4"><i class="fa-solid fa-id-card text-primary me-2"></i> Client & Material Grade</h5>
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label text-muted small fw-semibold text-uppercase tracking-wider">Customer</label>
+                            <select name="customer_id" id="customerSelect" class="form-select" required>
+                                <option value="">-- Choose Customer --</option>
+                                {% for cust in customers %}
+                                <option value="{{ cust.customer_id }}">{{ cust.name }} ({{ cust.phone }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label text-muted small fw-semibold text-uppercase tracking-wider">Material Grade</label>
+                            <select name="material_id" id="materialSelect" class="form-select" required>
+                                <option value="">-- Choose Material --</option>
+                                {% for mat in materials %}
+                                <option value="{{ mat.material_id }}" data-rate="{{ mat.rate }}">{{ mat.name }} (₹{{ "{:,.0f}".format(mat.rate) }}/sqft)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layout Selector -->
+                <div class="apple-card p-4">
+                    <h5 class="fw-bold text-dark border-bottom pb-3 mb-4"><i class="fa-solid fa-shapes text-primary me-2"></i> Kitchen Layout Shape</h5>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <input type="radio" class="btn-check" name="layout_type" id="layoutStraight" value="Straight Kitchen" checked autocomplete="off">
+                            <label class="btn btn-outline-secondary w-100 p-3 rounded-4 text-start h-100 d-flex flex-column justify-content-between" for="layoutStraight" style="min-height: 100px;">
+                                <span class="fw-bold d-block text-dark">Straight Kitchen</span>
+                                <span class="text-muted small font-medium block" style="font-size: 11px; line-height: 1.3;">Single wall corridor</span>
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input type="radio" class="btn-check" name="layout_type" id="layoutL" value="L Shape Kitchen" autocomplete="off">
+                            <label class="btn btn-outline-secondary w-100 p-3 rounded-4 text-start h-100 d-flex flex-column justify-content-between" for="layoutL" style="min-height: 100px;">
+                                <span class="fw-bold d-block text-dark">L Shape Kitchen</span>
+                                <span class="text-muted small font-medium block" style="font-size: 11px; line-height: 1.3;">Two perpendicular counters</span>
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input type="radio" class="btn-check" name="layout_type" id="layoutU" value="U Shape Kitchen" autocomplete="off">
+                            <label class="btn btn-outline-secondary w-100 p-3 rounded-4 text-start h-100 d-flex flex-column justify-content-between" for="layoutU" style="min-height: 100px;">
+                                <span class="fw-bold d-block text-dark">U Shape Kitchen</span>
+                                <span class="text-muted small font-medium block" style="font-size: 11px; line-height: 1.3;">Three wall system counter</span>
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input type="radio" class="btn-check" name="layout_type" id="layoutParallel" value="Parallel Kitchen" autocomplete="off">
+                            <label class="btn btn-outline-secondary w-100 p-3 rounded-4 text-start h-100 d-flex flex-column justify-content-between" for="layoutParallel" style="min-height: 100px;">
+                                <span class="fw-bold d-block text-dark">Parallel Kitchen</span>
+                                <span class="text-muted small font-medium block" style="font-size: 11px; line-height: 1.3;">Dual parallel corridors</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Measurements Capture -->
+                <div class="apple-card p-4">
+                    <h5 class="fw-bold text-dark border-bottom pb-3 mb-4"><i class="fa-solid fa-ruler-combined text-primary me-2"></i> Sizing Specifications</h5>
+                    <div class="row g-4">
+                        <div class="col-12 col-sm-6">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <label class="form-label text-muted small fw-semibold text-uppercase tracking-wider mb-0">Length (ft)</label>
+                                <span class="font-monospace small fw-bold px-2 py-0.5 rounded border bg-light text-dark" id="lengthBadge">10 ft</span>
+                            </div>
+                            <input type="range" class="form-range" min="3" max="40" step="0.5" id="lengthInput" name="length" value="10">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <label class="form-label text-muted small fw-semibold text-uppercase tracking-wider mb-0">Width (ft)</label>
+                                <span class="font-monospace small fw-bold px-2 py-0.5 rounded border bg-light text-dark" id="widthBadge">8 ft</span>
+                            </div>
+                            <input type="range" class="form-range" min="2" max="30" step="0.5" id="widthInput" name="width" value="8">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+    </div>
+
+    <!-- Live Cost Preview Receipt (Right 5 Columns) -->
+    <div class="col-12 col-lg-5">
+        <div class="apple-card p-4">
+            <div class="text-center border-bottom pb-3 mb-4">
+                <span class="small font-bold text-muted text-uppercase tracking-widest block" style="font-size: 10px; font-weight: 700;">Live Calculations</span>
+                <h5 class="fw-bold text-dark mt-1">Estimate Bill</h5>
+            </div>
+
+            <!-- Realtime Price Breakdown rows -->
+            <div class="d-flex flex-column gap-3 font-semibold text-sm">
+                <div class="d-flex align-items-center justify-content-between text-muted">
+                    <span>Kitchen Area</span>
+                    <span class="text-dark font-monospace" id="previewArea">80.00 sq ft</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between text-muted">
+                    <span>Material Rate</span>
+                    <span class="text-dark font-monospace" id="previewRate">₹0 / sq ft</span>
+                </div>
+
+                <hr class="my-2 text-muted">
+
+                <div class="d-flex align-items-center justify-content-between text-muted">
+                    <span>Material Cost</span>
+                    <span class="text-dark font-monospace" id="previewCost">₹0</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between text-muted">
+                    <span>GST (18% SGST + CGST)</span>
+                    <span class="text-dark font-monospace" id="previewGst">₹0</span>
+                </div>
+
+                <hr class="my-2 text-muted">
+
+                <div class="bg-light border p-3 rounded-4 d-flex align-items-center justify-content-between">
+                    <span class="fw-bold text-dark">Grand Total</span>
+                    <h4 class="fw-black text-primary font-monospace mb-0" id="previewTotal">₹0</h4>
+                </div>
+            </div>
+
+            <div class="pt-4 mt-2">
+                <button type="submit" class="btn btn-apple-primary w-100 py-3 font-semibold d-flex align-items-center justify-content-center gap-2">
+                    <i class="fa-solid fa-calculator"></i> Save & Generate Proposal
+                </button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const lengthInput = document.getElementById("lengthInput");
+        const widthInput = document.getElementById("widthInput");
+        const lengthBadge = document.getElementById("lengthBadge");
+        const widthBadge = document.getElementById("widthBadge");
+        const materialSelect = document.getElementById("materialSelect");
+
+        const previewArea = document.getElementById("previewArea");
+        const previewRate = document.getElementById("previewRate");
+        const previewCost = document.getElementById("previewCost");
+        const previewGst = document.getElementById("previewGst");
+        const previewTotal = document.getElementById("previewTotal");
+
+        // Format currency helper
+        function formatINR(val) {
+            return new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                maximumFractionDigits: 0
+            }).format(val);
+        }
+
+        function calculateEstimates() {
+            const length = parseFloat(lengthInput.value) || 0;
+            const width = parseFloat(widthInput.value) || 0;
+            
+            lengthBadge.textContent = `${length} ft`;
+            widthBadge.textContent = `${width} ft`;
+
+            const area = length * width;
+            previewArea.textContent = `${area.toFixed(2)} sq ft`;
+
+            // Read material rate
+            const selectedOpt = materialSelect.options[materialSelect.selectedIndex];
+            const rate = selectedOpt && selectedOpt.dataset.rate ? parseFloat(selectedOpt.dataset.rate) : 0;
+            
+            previewRate.textContent = `${formatINR(rate)} / sq ft`;
+
+            const materialCost = area * rate;
+            const gst = materialCost * 0.18;
+            const grandTotal = materialCost + gst;
+
+            previewCost.textContent = formatINR(materialCost);
+            previewGst.textContent = formatINR(gst);
+            previewTotal.textContent = formatINR(grandTotal);
+        }
+
+        // Add listeners
+        lengthInput.addEventListener("input", calculateEstimates);
+        widthInput.addEventListener("input", calculateEstimates);
+        materialSelect.addEventListener("change", calculateEstimates);
+
+        // Initial run
+        calculateEstimates();
+    });
+</script>
+{% endblock %}

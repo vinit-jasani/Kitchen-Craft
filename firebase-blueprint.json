@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User credentials for authentication",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "password": { "type": "string" }
+      },
+      "required": ["username", "password"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer personal details",
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "integer" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" }
+      },
+      "required": ["customer_id", "name", "phone"]
+    },
+    "Material": {
+      "title": "Material",
+      "description": "Available materials for calculation",
+      "type": "object",
+      "properties": {
+        "material_id": { "type": "integer" },
+        "name": { "type": "string" },
+        "rate": { "type": "number" },
+        "image": { "type": "string" }
+      },
+      "required": ["material_id", "name", "rate"]
+    },
+    "Estimate": {
+      "title": "Estimate",
+      "description": "Calculated material estimates",
+      "type": "object",
+      "properties": {
+        "estimate_id": { "type": "integer" },
+        "customer_id": { "type": "integer" },
+        "material_id": { "type": "integer" },
+        "length": { "type": "number" },
+        "width": { "type": "number" },
+        "layout_type": { "type": "string" },
+        "area": { "type": "number" },
+        "material_cost": { "type": "number" },
+        "gst": { "type": "number" },
+        "total_cost": { "type": "number" },
+        "created_date": { "type": "string" }
+      },
+      "required": [
+        "estimate_id",
+        "customer_id",
+        "material_id",
+        "length",
+        "width",
+        "layout_type",
+        "area",
+        "material_cost",
+        "gst",
+        "total_cost",
+        "created_date"
+      ]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Collection of system administrators"
+    },
+    "customers": {
+      "schema": "Customer",
+      "description": "Collection of kitchen clients"
+    },
+    "materials": {
+      "schema": "Material",
+      "description": "Collection of kitchen design materials"
+    },
+    "estimates": {
+      "schema": "Estimate",
+      "description": "Collection of all generated layout estimates"
+    }
+  }
+}

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}KitchenCraft - Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-5" style="margin-top: 20px;">
+    <!-- Welcome Header -->
+    <div class="col-12 d-flex flex-col flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+            <h1 class="fw-bold tracking-tight text-dark mb-1">Dashboard</h1>
+            <p className="text-muted font-medium mb-0">Overview of modular kitchen cost estimation business performance</p>
+        </div>
+        <div class="small text-muted font-monospace bg-white border px-3 py-1.5 rounded-pill shadow-sm">
+            Live Database • UTC: 2026-06-30
+        </div>
+    </div>
+
+    <!-- Statistics Bento Grid -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="apple-card p-4 d-flex flex-column justify-content-between h-100">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <span class="small font-bold text-muted text-uppercase tracking-wider">Total Customers</span>
+                <span class="rounded-3 d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px; background-color: rgba(0, 113, 227, 0.05); color: var(--primary-blue);">
+                    <i class="fa-solid fa-users"></i>
+                </span>
+            </div>
+            <div>
+                <h2 class="fw-bold tracking-tight mb-1 text-dark">{{ total_customers }}</h2>
+                <span class="small font-medium text-muted">Active database directory</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="apple-card p-4 d-flex flex-column justify-content-between h-100">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <span class="small font-bold text-muted text-uppercase tracking-wider">Material Grades</span>
+                <span class="rounded-3 d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px; background-color: rgba(52, 199, 89, 0.05); color: var(--success-color);">
+                    <i class="fa-solid fa-tag"></i>
+                </span>
+            </div>
+            <div>
+                <h2 class="fw-bold tracking-tight mb-1 text-dark">{{ total_materials }}</h2>
+                <span class="small font-medium text-muted">Standard rate masters</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="apple-card p-4 d-flex flex-column justify-content-between h-100">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <span class="small font-bold text-muted text-uppercase tracking-wider">Estimates Issued</span>
+                <span class="rounded-3 d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px; background-color: rgba(191, 90, 242, 0.05); color: #BF5AF2;">
+                    <i class="fa-solid fa-file-invoice"></i>
+                </span>
+            </div>
+            <div>
+                <h2 class="fw-bold tracking-tight mb-1 text-dark">{{ total_estimates }}</h2>
+                <span class="small font-medium text-muted">Active configurations</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="apple-card p-4 d-flex flex-column justify-content-between h-100">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <span class="small font-bold text-muted text-uppercase tracking-wider">Estimated Revenue</span>
+                <span class="rounded-3 d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px; background-color: rgba(255, 149, 0, 0.05); color: #FF9500;">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </span>
+            </div>
+            <div>
+                <h2 class="fw-bold tracking-tight mb-1 text-dark">₹{{ "{:,.0f}".format(revenue) }}</h2>
+                <span class="small font-medium text-muted">Total valuation</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Section Split -->
+    <div class="col-12 col-lg-8">
+        <div class="apple-card p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h5 class="fw-bold text-dark mb-0">Recent Estimates</h5>
+                    <p class="text-muted small font-medium mt-0.5 mb-0">Lately generated estimates</p>
+                </div>
+                <a href="{{ url_for('history') }}" class="btn btn-sm btn-link font-semibold text-primary text-decoration-none">
+                    View all <i class="fa-solid fa-arrow-right-long ms-1"></i>
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle text-start">
+                    <thead>
+                        <tr class="text-uppercase text-muted border-bottom" style="font-size: 11px; font-weight: 700;">
+                            <th class="py-3">ID</th>
+                            <th class="py-3">Customer</th>
+                            <th class="py-3">Layout</th>
+                            <th class="py-3 text-end">Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if recent_estimates %}
+                            {% for est in recent_estimates %}
+                            <tr>
+                                <td class="py-3 font-monospace small">#KC-EST-{{ "%04d"|format(est.estimate_id) }}</td>
+                                <td class="py-3 fw-medium">{{ est.customer_name }}</td>
+                                <td class="py-3">
+                                    <span class="badge rounded-pill text-muted border bg-light py-1.5 px-3 font-semibold">
+                                        {{ est.layout_type }}
+                                    </span>
+                                </td>
+                                <td class="py-3 text-end fw-bold text-primary">₹{{ "{:,.0f}".format(est.total_cost) }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-5 small">No estimates saved yet. Click "Estimate Studio" to calculate.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Column -->
+    <div class="col-12 col-lg-4">
+        <div class="apple-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h5 class="fw-bold text-dark mb-4">Quick Workflows</h5>
+                
+                <div class="d-flex flex-column gap-3">
+                    <a href="{{ url_for('estimate') }}" class="d-flex align-items-center gap-3 p-3 rounded-4 bg-light text-decoration-none hover-shadow border border-transparent hover-border">
+                        <span class="bg-primary text-white d-flex align-items-center justify-content-center rounded-3" style="width: 44px; height: 44px;">
+                            <i class="fa-solid fa-plus-circle fa-lg"></i>
+                        </span>
+                        <div>
+                            <strong class="text-dark d-block">New Estimate Studio</strong>
+                            <span class="text-muted small font-medium">Capture modular dimensions</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('customers') }}" class="d-flex align-items-center gap-3 p-3 rounded-4 bg-light text-decoration-none hover-shadow border border-transparent hover-border">
+                        <span class="bg-success text-white d-flex align-items-center justify-content-center rounded-3" style="width: 44px; height: 44px; background-color: var(--success-color) !important;">
+                            <i class="fa-solid fa-user-plus fa-lg"></i>
+                        </span>
+                        <div>
+                            <strong class="text-dark d-block">Client Registry</strong>
+                            <span class="text-muted small font-medium">Add, update customer entries</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('materials') }}" class="d-flex align-items-center gap-3 p-3 rounded-4 bg-light text-decoration-none hover-shadow border border-transparent hover-border">
+                        <span class="bg-warning text-white d-flex align-items-center justify-content-center rounded-3" style="width: 44px; height: 44px; background-color: #FF9500 !important;">
+                            <i class="fa-solid fa-sliders-h fa-lg"></i>
+                        </span>
+                        <div>
+                            <strong class="text-dark d-block">Materials Pricing</strong>
+                            <span class="text-muted small font-medium">Modify square foot unit rates</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 pt-4 border-top">
+                <span class="text-uppercase text-muted font-bold" style="font-size: 10px; font-weight: 700; letter-spacing: 1px;">
+                    KitchenCraft Intelligent Costing
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

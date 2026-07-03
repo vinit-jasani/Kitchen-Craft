@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}KitchenCraft - Estimate History{% endblock %}
+
+{% block content %}
+<div class="row g-4" style="margin-top: 20px;">
+    <!-- Title -->
+    <div class="col-12">
+        <h1 class="fw-bold tracking-tight text-dark mb-1">Estimate History</h1>
+        <p class="text-muted font-medium mb-0">Retrieve archives and generate high-resolution ReportLab PDFs</p>
+    </div>
+
+    <!-- Search bar -->
+    <div class="col-12 col-md-5">
+        <form action="{{ url_for('history') }}" method="GET">
+            <div class="input-group bg-white rounded-4 border p-1 shadow-sm">
+                <span class="input-group-text border-0 bg-transparent text-muted"><i class="fa-solid fa-search"></i></span>
+                <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Search by customer, layout, etc..." value="{{ search }}">
+                {% if search %}
+                <a href="{{ url_for('history') }}" class="btn btn-light rounded-3 d-flex align-items-center justify-content-center text-muted"><i class="fa-solid fa-times"></i></a>
+                {% endif %}
+                <button type="submit" class="btn btn-apple-primary rounded-3">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table content inside Apple style card -->
+    <div class="col-12">
+        <div class="apple-card p-4 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table align-middle text-start mb-0">
+                    <thead>
+                        <tr class="text-uppercase text-muted border-bottom" style="font-size: 11px; font-weight: 700;">
+                            <th class="py-3">ID</th>
+                            <th class="py-3">Date</th>
+                            <th class="py-3">Customer</th>
+                            <th class="py-3">Layout Shape</th>
+                            <th class="py-3">Area Size</th>
+                            <th class="py-3 text-end">Grand Total</th>
+                            <th class="py-3 text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if estimates %}
+                            {% for est in estimates %}
+                            <tr class="fw-medium text-dark">
+                                <td class="py-3 font-monospace small">#KC-EST-{{ "%04d"|format(est.estimate_id) }}</td>
+                                <td class="py-3 text-muted small"><i class="fa-solid fa-calendar me-1"></i> {{ est.created_date }}</td>
+                                <td class="py-3 fw-bold">{{ est.customer_name }}</td>
+                                <td class="py-3">
+                                    <span class="badge rounded-pill text-muted border bg-light py-1.5 px-3 font-semibold">
+                                        {{ est.layout_type }}
+                                    </span>
+                                </td>
+                                <td class="py-3 font-monospace small text-muted">{{ "%.1f"|format(est.area) }} sq ft</td>
+                                <td class="py-3 text-end fw-bold text-primary">₹{{ "{:,.0f}".format(est.total_cost) }}</td>
+                                <td class="py-3 text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        <a href="{{ url_for('generate_pdf', id=est.estimate_id) }}" class="btn btn-sm btn-light border rounded-3 px-3" title="Download Invoice PDF">
+                                            <i class="fa-solid fa-file-pdf me-1"></i> PDF
+                                        </a>
+                                        <a href="{{ url_for('delete_estimate', id=est.estimate_id) }}" class="btn btn-sm btn-outline-danger border-0 rounded-3 px-3" onclick="return confirm('Permanently delete this Modular Kitchen estimate?');" title="Delete Quote">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-5 small">No estimates saved in the database matching filter.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

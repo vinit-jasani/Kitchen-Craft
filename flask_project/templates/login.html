@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}KitchenCraft - Sign In{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-100" style="margin-top: -60px;">
+    <div class="col-12 col-md-5 col-lg-4">
+        <div class="apple-card p-5">
+            <div class="text-center mb-5">
+                <div class="bg-light text-primary d-inline-flex align-items-center justify-content-center rounded-4 mb-3 border" style="width: 60px; height: 60px; color: var(--primary-blue) !important;">
+                    <i class="fa-solid fa-kitchen-set fa-2x"></i>
+                </div>
+                <h3 class="fw-bold tracking-tight text-dark mb-1">KitchenCraft</h3>
+                <p class="text-muted small font-medium">Apple-Inspired Modular Estimator</p>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-danger border-0 rounded-4 d-flex align-items-center gap-2 mb-4" style="background-color: rgba(255, 59, 48, 0.05); color: var(--error-color);">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span class="small font-semibold">{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form action="{{ url_for('login') }}" method="POST" class="d-flex flex-column gap-4">
+                <div>
+                    <label class="form-label text-muted text-uppercase font-bold tracking-wider mb-2" style="font-size: 10px; font-weight: 700;">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0 text-muted rounded-start-4"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" name="username" class="form-control rounded-end-4" placeholder="admin" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label text-muted text-uppercase font-bold tracking-wider mb-2" style="font-size: 10px; font-weight: 700;">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0 text-muted rounded-start-4"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" name="password" class="form-control rounded-end-4" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="btn btn-apple-primary w-full py-3 d-flex align-items-center justify-content-center gap-2" style="width: 100%;">
+                        Sign In <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-5 pt-4 border-top text-center">
+                <p class="text-muted small mb-0" style="font-size: 11px;">
+                    Demo Account — Use <span class="font-bold text-dark">admin</span> / <span class="font-bold text-dark">admin123</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

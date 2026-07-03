@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+/* --------------------------------------------------
+   APPLE HUMAN INTERFACE COMPLIANT SYSTEM DARK THEME
+   -------------------------------------------------- */
+.dark {
+  --bg-dark-body: #0a0a0c;
+  --bg-dark-panel: #161618;
+  --bg-dark-panel-hover: #1e1e21;
+  --bg-dark-hover: #222226;
+  --border-dark: rgba(255, 255, 255, 0.08);
+  --border-dark-hover: rgba(255, 255, 255, 0.15);
+  --text-dark-primary: #f5f5f7;
+  --text-dark-secondary: #a1a1a6;
+  --text-dark-tertiary: #86868b;
+  color-scheme: dark;
+}
+
+/* Base Body Override */
+.dark body,
+.dark #app-shell,
+.dark #login-container {
+  background-color: var(--bg-dark-body) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+/* Background Class Overrides */
+.dark .bg-\[\#F5F5F7\] {
+  background-color: var(--bg-dark-body) !important;
+}
+.dark .bg-white {
+  background-color: var(--bg-dark-panel) !important;
+}
+.dark .bg-\[\#F5F5F7\]\/50 {
+  background-color: rgba(10, 10, 12, 0.5) !important;
+}
+.dark .bg-\[\#F5F5F7\]\/60 {
+  background-color: rgba(10, 10, 12, 0.6) !important;
+}
+.dark .bg-\[\#F5F5F7\]\/70 {
+  background-color: rgba(10, 10, 12, 0.7) !important;
+}
+.dark .bg-\[\#F5F5F7\]\/80 {
+  background-color: rgba(10, 10, 12, 0.8) !important;
+}
+.dark .bg-white\/80 {
+  background-color: rgba(22, 22, 24, 0.8) !important;
+}
+
+/* Hover & Focus Overrides */
+.dark .hover\:bg-\[\#F5F5F7\]:hover,
+.dark .hover\:bg-\[\#E8E8ED\]:hover,
+.dark .hover\:bg-\[\#F5F5F7\]\/40:hover {
+  background-color: var(--bg-dark-hover) !important;
+}
+.dark .focus\:bg-white:focus {
+  background-color: var(--bg-dark-panel-hover) !important;
+}
+
+/* Text Class Overrides */
+.dark .text-\[\#1D1D1F\] {
+  color: var(--text-dark-primary) !important;
+}
+.dark .text-\[\#6E6E73\] {
+  color: var(--text-dark-secondary) !important;
+}
+.dark .text-\[\#86868B\] {
+  color: var(--text-dark-tertiary) !important;
+}
+.dark .hover\:text-\[\#1D1D1F\]:hover {
+  color: var(--text-dark-primary) !important;
+}
+
+/* Borders Overrides */
+.dark .border-\[\#D2D2D7\]\/60,
+.dark .border-\[\#D2D2D7\]\/50,
+.dark .border-\[\#D2D2D7\]\/40,
+.dark .border-\[\#D2D2D7\]\/30,
+.dark .border-\[\#D2D2D7\]\/20,
+.dark .border-\[\#D2D2D7\]\/15 {
+  border-color: var(--border-dark) !important;
+}
+.dark .divide-\[\#F5F5F7\] > * + * {
+  border-color: var(--border-dark) !important;
+}
+.dark .border-b {
+  border-color: var(--border-dark) !important;
+}
+.dark .divide-y > * + * {
+  border-color: var(--border-dark) !important;
+}
+
+/* Custom Interactive UI elements */
+.dark input, 
+.dark select, 
+.dark textarea {
+  background-color: var(--bg-dark-body) !important;
+  color: var(--text-dark-primary) !important;
+  border-color: var(--border-dark) !important;
+}
+.dark input:focus, 
+.dark select:focus, 
+.dark textarea:focus {
+  border-color: #0071E3 !important;
+  background-color: var(--bg-dark-panel-hover) !important;
+}
+.dark select option {
+  background-color: var(--bg-dark-panel) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+/* Dashboard Specifcs & Table Hover */
+.dark .hover\:bg-\[\#F5F5F7\]\/40:hover {
+  background-color: var(--bg-dark-hover) !important;
+}
+.dark tr.border-b {
+  border-color: var(--border-dark) !important;
+}
+.dark th {
+  color: var(--text-dark-tertiary) !important;
+}
+
+/* Estimate Studio & History Specific overrides */
+.dark .shadow-\[0_8px_30px_rgb\(0\,0\,0\,0\.04\)\] {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+}
+.dark .shadow-\[0_8px_24px_rgba\(0\,0\,0\,0\.02\)\] {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
