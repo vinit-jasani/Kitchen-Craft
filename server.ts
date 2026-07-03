@@ -168,7 +168,7 @@ async function startServer() {
   }
 
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   app.use(express.json());
 
@@ -741,10 +741,12 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+    const distPath = path.join(process.cwd(), "dist");[cite: 1]
+    app.use(express.static(distPath));[cite: 1]
+  
+    // Make sure this is a catch-all (*) wildcard so React Router can handle nested links
+    app.get("*", (req, res) => {[cite: 1]
+    res.sendFile(path.join(distPath, "index.html"));[cite: 1]
     });
   }
 
